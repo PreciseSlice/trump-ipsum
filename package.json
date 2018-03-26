@@ -1,0 +1,16 @@
+{
+  "name": "remarks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "scrape-remark-links.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "./node_modules/eslint/bin/eslint.js ./*.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^4.19.1"
+  }
+}
