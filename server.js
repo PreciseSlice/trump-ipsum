@@ -11,10 +11,6 @@ app.use(express.static('public'));
 
 app.locals.title = 'Trump Ipsum';
 
-app.listen(app.get('port'), () => {
-  console.log(`${app.locals.title} server is running on ${app.get('port')}.`);
-});
-
 app.post('/api/v1/remarks', (request, response) => {
   const remark = request.body;
   for (let requiredParameter of ['title', 'topic', 'date']) {
@@ -25,13 +21,13 @@ app.post('/api/v1/remarks', (request, response) => {
     }
   }
   database('remarks')
-    .insert(remark, 'id')
-    .then(remark => {
-      response.status(201).json({ id: remark[0] });
-    })
-    .catch(error => {
-      response.status(500).json({ error });
-    });
+  .insert(remark, 'id')
+  .then(remark => {
+    response.status(201).json({ id: remark[0] });
+  })
+  .catch(error => {
+    response.status(500).json({ error });
+  });
 });
 
 app.post('/api/v1/paragraphs', (request, response) => {
@@ -44,30 +40,30 @@ app.post('/api/v1/paragraphs', (request, response) => {
     }
   }
   database('paragraphs')
-    .insert(paragraph, 'id')
-    .then(paragraph => {
-      response.status(201).json({ id: paragraph[0] });
-    })
-    .catch(error => {
-      response.status(500).json({ error });
-    });
+  .insert(paragraph, 'id')
+  .then(paragraph => {
+    response.status(201).json({ id: paragraph[0] });
+  })
+  .catch(error => {
+    response.status(500).json({ error });
+  });
 });
 
 app.get('/api/v1/remarks', (request, response) => {
   database('remarks')
-    .select()
-    .then(remarks => {
-      if (remarks.length) {
-        response.status(200).json(remarks);
-      } else {
-        response.status(404).json({
-          error: 'remarks not found'
-        });
-      }
-    })
-    .catch(error => {
-      response.status(500).json({ error });
-    });
+  .select()
+  .then(remarks => {
+    if (remarks.length) {
+      response.status(200).json(remarks);
+    } else {
+      response.status(404).json({
+        error: 'remarks not found'
+      });
+    }
+  })
+  .catch(error => {
+    response.status(500).json({ error });
+  });
 });
 
 app.get('/api/v1/paragraphs', (request, response) => {
@@ -120,7 +116,62 @@ app.get('/api/v1/paragraphs/:id', (request, response) => {
     })
     .catch(error => {
       response.status(500).json({ error });
-    });
+    })
+  .select()
+  .then(paragraphs => {
+    if (paragraphs.length) {
+      response.status(200).json(paragraphs);
+    } else {
+      response.status(404).json({
+        error: 'paragraphs not found'
+      });
+    }
+  })
+  .catch(error => {
+    response.status(500).json({ error });
+  });
+});
+
+app.delete('/api/v1/remarks/:id', (request, response) => {
+  database('remarks')
+    .where('id', request.params.id)
+    .select()
+    .del()
+    .then(remark => {
+      if (remark) {
+        response.status(202).json(remark);
+      } else {
+        return response.status(422).send({
+          error: 'No remark ID provided'
+        });
+      }
+  })
+  .catch(error => {
+    response.status(500).json({ error });
+  });
+});
+
+app.delete('/api/v1/paragraphs/:id', (request, response) => {
+  database('paragraphs')
+  .where('id', request.params.id)
+  .select()
+  .del()
+  .then(paragraph => {
+    if (paragraph) {
+      response.status(202).json(paragraph);
+    } else {
+      return response.status(422).send({
+        error: 'No paragraph ID provided'
+      });
+    }
+  })
+  .catch(error => {
+    response.status(500).json({ error });
+  });
+});
+
+app.listen(app.get('port'), () => {
+  console.log(`${app.locals.title} server is running on ${app.get('port')}.`);
 });
 
 module.exports = app;
