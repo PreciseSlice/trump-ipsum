@@ -53,4 +53,38 @@ app.post('/api/v1/paragraphs', (request, response) => {
     });
 });
 
+app.get('/api/v1/remarks', (request, response) => {
+  database('remarks')
+    .select()
+    .then( remarks => {
+      if (remarks.length) {
+        response.status(200).json(remarks);
+      } else {
+        response.status(404).json({
+          error: 'remarks not found'
+        })
+      }
+    })
+    .catch(error => {
+      response.status(500).json({ error })
+    })
+})
+
+app.get('/api/v1/paragraphs', (request, response) => {
+  database('paragraphs')
+    .select()
+    .then( paragraphs => {
+      if (paragraphs.length) {
+        response.status(200).json(paragraphs);
+      } else {
+        response.status(404).json({
+          error: 'paragraphs not found'
+        })
+      }
+    })
+    .catch(error => {
+      response.status(500).json({ error })
+    })
+})
+
 module.exports = app;
