@@ -117,19 +117,6 @@ app.get('/api/v1/paragraphs/:id', (request, response) => {
     .catch(error => {
       response.status(500).json({ error });
     })
-    .select()
-    .then(paragraphs => {
-      if (paragraphs.length) {
-        response.status(200).json(paragraphs);
-      } else {
-        response.status(404).json({
-          error: 'paragraphs not found'
-        });
-      }
-    })
-    .catch(error => {
-      response.status(500).json({ error });
-    });
 });
 
 app.delete('/api/v1/remarks/:id', (request, response) => {
