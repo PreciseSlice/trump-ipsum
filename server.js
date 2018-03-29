@@ -228,6 +228,7 @@ app.patch('/api/v1/remarks/:id', (request, response) => {
 });
 
 app.listen(app.get('port'), () => {
+  // eslint-disable-next-line
   console.log(`${app.locals.title} server is running on ${app.get('port')}.`);
 });
 
