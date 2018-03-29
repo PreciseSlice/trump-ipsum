@@ -21,13 +21,13 @@ app.post('/api/v1/remarks', (request, response) => {
     }
   }
   database('remarks')
-  .insert(remark, 'id')
-  .then(remark => {
-    response.status(201).json({ id: remark[0] });
-  })
-  .catch(error => {
-    response.status(500).json({ error });
-  });
+    .insert(remark, 'id')
+    .then(remark => {
+      response.status(201).json({ id: remark[0] });
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
 });
 
 app.post('/api/v1/paragraphs', (request, response) => {
@@ -40,30 +40,30 @@ app.post('/api/v1/paragraphs', (request, response) => {
     }
   }
   database('paragraphs')
-  .insert(paragraph, 'id')
-  .then(paragraph => {
-    response.status(201).json({ id: paragraph[0] });
-  })
-  .catch(error => {
-    response.status(500).json({ error });
-  });
+    .insert(paragraph, 'id')
+    .then(paragraph => {
+      response.status(201).json({ id: paragraph[0] });
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
 });
 
 app.get('/api/v1/remarks', (request, response) => {
   database('remarks')
-  .select()
-  .then(remarks => {
-    if (remarks.length) {
-      response.status(200).json(remarks);
-    } else {
-      response.status(404).json({
-        error: 'remarks not found'
-      });
-    }
-  })
-  .catch(error => {
-    response.status(500).json({ error });
-  });
+    .select()
+    .then(remarks => {
+      if (remarks.length) {
+        response.status(200).json(remarks);
+      } else {
+        response.status(404).json({
+          error: 'remarks not found'
+        });
+      }
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
 });
 
 app.get('/api/v1/paragraphs', (request, response) => {
@@ -117,19 +117,19 @@ app.get('/api/v1/paragraphs/:id', (request, response) => {
     .catch(error => {
       response.status(500).json({ error });
     })
-  .select()
-  .then(paragraphs => {
-    if (paragraphs.length) {
-      response.status(200).json(paragraphs);
-    } else {
-      response.status(404).json({
-        error: 'paragraphs not found'
-      });
-    }
-  })
-  .catch(error => {
-    response.status(500).json({ error });
-  });
+    .select()
+    .then(paragraphs => {
+      if (paragraphs.length) {
+        response.status(200).json(paragraphs);
+      } else {
+        response.status(404).json({
+          error: 'paragraphs not found'
+        });
+      }
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
 });
 
 app.delete('/api/v1/remarks/:id', (request, response) => {
@@ -145,29 +145,86 @@ app.delete('/api/v1/remarks/:id', (request, response) => {
           error: 'No remark ID provided'
         });
       }
-  })
-  .catch(error => {
-    response.status(500).json({ error });
-  });
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
 });
 
 app.delete('/api/v1/paragraphs/:id', (request, response) => {
   database('paragraphs')
-  .where('id', request.params.id)
-  .select()
-  .del()
-  .then(paragraph => {
-    if (paragraph) {
-      response.status(202).json(paragraph);
-    } else {
+    .where('id', request.params.id)
+    .select()
+    .del()
+    .then(paragraph => {
+      if (paragraph) {
+        response.status(202).json(paragraph);
+      } else {
+        return response.status(422).send({
+          error: 'No paragraph ID provided'
+        });
+      }
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
+
+app.patch('/api/v1/paragraphs/:id', (request, response) => {
+  const body = request.body;
+
+  for (let requiredParameter of ['length', 'text']) {
+    if (!body[requiredParameter]) {
       return response.status(422).send({
-        error: 'No paragraph ID provided'
+        error: `Error you are missing ${requiredParameter} property`
       });
     }
-  })
-  .catch(error => {
-    response.status(500).json({ error });
-  });
+  }
+
+  const { length, text } = request.body;
+
+  database('paragraphs')
+    .where('id', request.params.id)
+    .select()
+    .update({
+      length: length,
+      text: text
+    })
+    .then(paragraph => {
+      response.status(201).json({ paragraph });
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
+
+app.patch('/api/v1/remarks/:id', (request, response) => {
+  const body = request.body;
+
+  for (let requiredParameter of ['title', 'topic', 'date']) {
+    if (!body[requiredParameter]) {
+      return response.status(422).send({
+        error: `Error you are missing ${requiredParameter} property`
+      });
+    }
+  }
+
+  const { title, topic, date } = request.body;
+
+  database('remarks')
+    .where('id', request.params.id)
+    .select()
+    .update({
+      title: title,
+      topic: topic,
+      date: date
+    })
+    .then(remark => {
+      response.status(201).json({ remark });
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
 });
 
 app.listen(app.get('port'), () => {
