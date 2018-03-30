@@ -126,7 +126,7 @@ describe('API routes', () => {
     it('should not update a remark with missing data', () => {
       return chai
         .request(server)
-        .post('/api/v1/remarks')
+        .patch('/api/v1/remarks/1')
         .send({
           title: 'The Title',
           date: '2/12/2018'
@@ -179,7 +179,8 @@ describe('API routes', () => {
         .send({
           remarks_id: 1,
           length: 'short',
-          text: 'All of the women on The Apprentice flirted with me — consciously or unconsciously.'
+          text:
+            'All of the women on The Apprentice flirted with me — consciously or unconsciously.'
         })
         .then(response => {
           response.should.have.status(201);
@@ -189,6 +190,109 @@ describe('API routes', () => {
         .catch(err => {
           throw err;
         });
+    });
+
+    it('should not create a new paragraph if missing data', () => {
+      return chai
+        .request(server)
+        .post('/api/v1/paragraphs/')
+        .send({
+          length: 'short',
+          text: 'Something offensive'
+        })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.have.property('error');
+          response.body.error.should.equal(
+            'Error you are missing remarks_id property'
+          );
+        });
+    });
+  });
+
+  describe('GET api/v1/paragraphs/:id', () => {
+    it('should return a specific paragraph', () => {
+      return chai
+        .request(server)
+        .get('/api/v1/paragraphs/3')
+        .then(response => {
+          response.should.have.status(200);
+          response.body.should.be.a('array');
+          response.body[0].id.should.equal(3);
+          response.body[0].length.should.equal('short');
+          response.body[0].text.should.equal(
+            'We have a great relationship.  They’re helping us a lot in North Korea.  And that’s China.'
+          );
+        });
+    });
+
+    it('should return 404 if paragraph with requested id does not exist', () => {
+      return chai
+        .request(server)
+        .get('/api/v1/paragraphs/32')
+        .then(response => {
+          response.should.have.status(404);
+          response.body.error.should.equal(
+            'Could not find paragraph with the id 32'
+          );
+        });
+    });
+  });
+
+  describe('PATCH api/v1/paragraphs/:id', () => {
+    it('should update the expected paragraph', () => {
+      return chai
+        .request(server)
+        .patch('/api/v1/paragraphs/1')
+        .send({
+          remarks_id: '1',
+          length: 'short',
+          text: 'Oops I did it again'
+        })
+        .then(response => {
+          response.should.have.status(201);
+          response.body.paragraph.should.equal(1);
+        });
+    });
+
+    it('should not update a paragraph with missing data', () => {
+      return chai
+        .request(server)
+        .patch('/api/v1/paragraphs/1')
+        .send({
+          length: 'long',
+          remarks_id: '1'
+        })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.have.property('error');
+          response.body.error.should.equal(
+            'Error you are missing text property'
+          );
+        });
+    });
+  });
+
+  describe('DELETE api/v1/paragraphs/:id', () => {
+    it('should delete specified paragraph', () => {
+      return chai
+        .request(server)
+        .delete('/api/v1/paragraphs/1')
+        .then(response => {
+          response.should.have.status(202);
+          response.body.should.equal(1);
+        });
+    });
+
+    it('should return 404 if paragraph id does not exist', () => {
+      return chai
+        .request(server)
+        .delete('/api/v1/paragraphs/32')
+        .then(response => {
+          response.should.have.status(404);
+          response.body.should.have.property('error')
+          response.body.error.should.equal('No paragraph ID provided');
+        })
     })
-  })
+  });
 });
