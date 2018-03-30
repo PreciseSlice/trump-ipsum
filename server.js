@@ -155,7 +155,7 @@ app.get('/api/v1/paragraphs/:id', (request, response) => {
     .select()
     .then(paragraph => {
       if (paragraph.length) {
-        response.status(200).json({ paragraph });
+        response.status(200).json( paragraph );
       } else {
         response.status(404).json({
           error: `Could not find paragraph with the id ${request.params.id}`
@@ -204,7 +204,7 @@ app.delete('/api/v1/paragraphs/:id', (request, response) => {
       if (paragraph) {
         response.status(202).json(paragraph);
       } else {
-        return response.status(422).send({
+        return response.status(404).send({
           error: 'No paragraph ID provided'
         });
       }
