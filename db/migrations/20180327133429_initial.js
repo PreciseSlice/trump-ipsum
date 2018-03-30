@@ -10,7 +10,7 @@ exports.up = function(knex, Promise) {
     knex.schema.createTable('paragraphs', table => {
       table.increments('id').primary();
       table.string('length');
-      table.string('text');
+      table.text('text');
       table.integer('remarks_id').unsigned();
       table.foreign('remarks_id').references('remarks.id');
       table.timestamps(true, true);
