@@ -4,6 +4,9 @@ const bodyParser = require('body-parser');
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
+const jwt = require('jsonwebtoken');
+
+process.env.SECRET_KEY = 'Putin Rules'
 
 app.use(bodyParser.json());
 app.set('port', process.env.PORT || 3000);
@@ -155,7 +158,7 @@ app.get('/api/v1/paragraphs/:id', (request, response) => {
     .select()
     .then(paragraph => {
       if (paragraph.length) {
-        response.status(200).json( paragraph );
+        response.status(200).json(paragraph);
       } else {
         response.status(404).json({
           error: `Could not find paragraph with the id ${request.params.id}`
@@ -212,6 +215,26 @@ app.delete('/api/v1/paragraphs/:id', (request, response) => {
     .catch(error => {
       response.status(500).json({ error });
     });
+});
+
+app.post('/authenticate', (request, response) => {
+  console.log(request.body)
+  const payload = request.body;
+  const emailDomain = payload.email.substring(payload.email.length - 10);
+
+  for (let requiredParameter of ['appName', 'email']) {
+    if (!payload[requiredParameter]) {
+      return response.status(422).send({ error: 'Invalid appName or email' });
+    }
+  }
+
+  if (emailDomain === '@turing.io') {
+    const token = jwt.sign(payload, process.env.SECRET_KEY);
+
+    return response.status(201).json({ token });
+  } else {
+    response.status(401).json({ error: 'Admin privileges not authorized' });
+  }
 });
 
 app.listen(app.get('port'), () => {
