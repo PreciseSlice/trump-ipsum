@@ -6,13 +6,31 @@ const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
 const jwt = require('jsonwebtoken');
 
-process.env.SECRET_KEY = 'Putin Rules'
+process.env.SECRET_KEY = 'Putin Rules';
 
 app.use(bodyParser.json());
 app.set('port', process.env.PORT || 3000);
 app.use(express.static('public'));
 
 app.locals.title = 'Trump Ipsum';
+
+const checkAuth = (request, response, next) => {
+  const { token } = request.body;
+  
+  if (!token) {
+    return response
+      .status(403)
+      .send({ error: 'You must be authorized to access this endpoint.'});
+  }
+
+  try {
+    jwt.verify(token, process.env.SECRET_KEY);
+
+    next();
+  } catch (error) {
+    return response.status(403).json({ error: 'invalid token' });
+  }
+};
 
 app.get('/api/v1/remarks', (request, response) => {
   database('remarks')
@@ -31,8 +49,10 @@ app.get('/api/v1/remarks', (request, response) => {
     });
 });
 
-app.post('/api/v1/remarks', (request, response) => {
-  const remark = request.body;
+app.post('/api/v1/remarks', checkAuth, (request, response) => {
+  const { title, topic, date } = request.body;
+  const remark = { title, topic, date };
+
   for (let requiredParameter of ['title', 'topic', 'date']) {
     if (!remark[requiredParameter]) {
       return response.status(422).send({
@@ -68,8 +88,9 @@ app.get('/api/v1/remarks/:id', (request, response) => {
     });
 });
 
-app.patch('/api/v1/remarks/:id', (request, response) => {
-  const body = request.body;
+app.patch('/api/v1/remarks/:id', checkAuth, (request, response) => {
+  const { title, topic, date } = request.body;
+  const body = { title, topic, date };
 
   for (let requiredParameter of ['title', 'topic', 'date']) {
     if (!body[requiredParameter]) {
@@ -78,8 +99,6 @@ app.patch('/api/v1/remarks/:id', (request, response) => {
       });
     }
   }
-
-  const { title, topic, date } = request.body;
 
   database('remarks')
     .where('id', request.params.id)
@@ -97,7 +116,7 @@ app.patch('/api/v1/remarks/:id', (request, response) => {
     });
 });
 
-app.delete('/api/v1/remarks/:id', (request, response) => {
+app.delete('/api/v1/remarks/:id', checkAuth, (request, response) => {
   database('remarks')
     .where('id', request.params.id)
     .select()
@@ -133,8 +152,10 @@ app.get('/api/v1/paragraphs', (request, response) => {
     });
 });
 
-app.post('/api/v1/paragraphs', (request, response) => {
-  const paragraph = request.body;
+app.post('/api/v1/paragraphs', checkAuth, (request, response) => {
+  const { length, text, remarks_id } = request.body;
+  const paragraph = { length, text, remarks_id };
+
   for (let requiredParameter of ['length', 'text', 'remarks_id']) {
     if (!paragraph[requiredParameter]) {
       return response.status(422).send({
@@ -170,8 +191,9 @@ app.get('/api/v1/paragraphs/:id', (request, response) => {
     });
 });
 
-app.patch('/api/v1/paragraphs/:id', (request, response) => {
-  const body = request.body;
+app.patch('/api/v1/paragraphs/:id', checkAuth, (request, response) => {
+  const { length, text } = request.body;
+  const body = { length, text };
 
   for (let requiredParameter of ['length', 'text']) {
     if (!body[requiredParameter]) {
@@ -180,8 +202,6 @@ app.patch('/api/v1/paragraphs/:id', (request, response) => {
       });
     }
   }
-
-  const { length, text } = request.body;
 
   database('paragraphs')
     .where('id', request.params.id)
@@ -198,7 +218,7 @@ app.patch('/api/v1/paragraphs/:id', (request, response) => {
     });
 });
 
-app.delete('/api/v1/paragraphs/:id', (request, response) => {
+app.delete('/api/v1/paragraphs/:id', checkAuth, (request, response) => {
   database('paragraphs')
     .where('id', request.params.id)
     .select()
@@ -218,7 +238,6 @@ app.delete('/api/v1/paragraphs/:id', (request, response) => {
 });
 
 app.post('/authenticate', (request, response) => {
-  console.log(request.body)
   const payload = request.body;
   const emailDomain = payload.email.substring(payload.email.length - 10);
 
