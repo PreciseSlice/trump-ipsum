@@ -2,14 +2,17 @@ const chai = require('chai');
 const should = chai.should();
 const chaiHttp = require('chai-http');
 const server = require('../server');
-
 const environment = 'test';
 const configuration = require('../knexfile')[environment];
 const database = require('knex')(configuration);
+const jwt = require('jsonwebtoken');
 
 chai.use(chaiHttp);
 
 describe('API routes', () => {
+
+  const token = jwt.sign({ email: 'vladimir@turing.io', appName: 'myMinion' }, process.env.SECRET_KEY);
+
   beforeEach(done => {
     database.migrate.rollback().then(() => {
       database.migrate.latest().then(() => {
@@ -51,7 +54,8 @@ describe('API routes', () => {
         .send({
           title: 'Another Title',
           topic: 'TOPIC TWO',
-          date: '02/28/2018'
+          date: '02/28/2018',
+          token
         })
         .then(response => {
           response.should.have.status(201);
@@ -69,7 +73,8 @@ describe('API routes', () => {
         .post('/api/v1/remarks')
         .send({
           title: 'Yeah He Did That',
-          topic: 'TOPIC ONE'
+          topic: 'TOPIC ONE',
+          token
         })
         .then(response => {
           response.should.have.status(422);
@@ -115,7 +120,8 @@ describe('API routes', () => {
         .send({
           topic: 'NEW TOPIC',
           title: 'The Title',
-          date: '2/12/2018'
+          date: '2/12/2018',
+          token
         })
         .then(response => {
           response.should.have.status(201);
@@ -129,7 +135,8 @@ describe('API routes', () => {
         .patch('/api/v1/remarks/1')
         .send({
           title: 'The Title',
-          date: '2/12/2018'
+          date: '2/12/2018',
+          token
         })
         .then(response => {
           response.should.have.status(422);
@@ -179,6 +186,7 @@ describe('API routes', () => {
         .send({
           remarks_id: 1,
           length: 'short',
+          token,
           text:
             'All of the women on The Apprentice flirted with me — consciously or unconsciously.'
         })
@@ -198,7 +206,8 @@ describe('API routes', () => {
         .post('/api/v1/paragraphs/')
         .send({
           length: 'short',
-          text: 'Something offensive'
+          text: 'Something offensive',
+          token
         })
         .then(response => {
           response.should.have.status(422);
@@ -247,7 +256,8 @@ describe('API routes', () => {
         .send({
           remarks_id: '1',
           length: 'short',
-          text: 'Oops I did it again'
+          text: 'Oops I did it again',
+          token
         })
         .then(response => {
           response.should.have.status(201);
@@ -261,7 +271,8 @@ describe('API routes', () => {
         .patch('/api/v1/paragraphs/1')
         .send({
           length: 'long',
-          remarks_id: '1'
+          remarks_id: '1',
+          token
         })
         .then(response => {
           response.should.have.status(422);
@@ -278,6 +289,7 @@ describe('API routes', () => {
       return chai
         .request(server)
         .delete('/api/v1/paragraphs/1')
+        .send({ token })
         .then(response => {
           response.should.have.status(202);
           response.body.should.equal(1);
@@ -288,6 +300,7 @@ describe('API routes', () => {
       return chai
         .request(server)
         .delete('/api/v1/paragraphs/32')
+        .send({ token })
         .then(response => {
           response.should.have.status(404);
           response.body.should.have.property('error')
