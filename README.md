@@ -1,6 +1,6 @@
 # BYOB Trump Ipsum
 
-An API which serves official presidential remarks one short paragraph at a time.
+An API which serves official presidential remarks one paragraph at a time.
 
 Authorized users have the ability to `POST` `PATCH` `DELETE` and are validated via Jason Web Tokens.
 
