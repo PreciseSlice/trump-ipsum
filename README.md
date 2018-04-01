@@ -1,5 +1,4 @@
-# BYOB Trump Ipsum Backend
-[![Build Status](https://travis-ci.org/PreciseSlice/trump-ipsum.svg?branch=master)](https://travis-ci.org/PreciseSlice/trump-ipsum)
+# BYOB Trump Ipsum Backend [![Build Status](https://travis-ci.org/PreciseSlice/trump-ipsum.svg?branch=master)](https://travis-ci.org/PreciseSlice/trump-ipsum)
 
 An API which serves official presidential remarks one paragraph at a time.
 
