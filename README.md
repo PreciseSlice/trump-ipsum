@@ -195,7 +195,7 @@ The paragraph id is returned in the case of a successful `POST`. Your response h
 <br/>
 ## PATCH
 
-###` /api/v1/remarks/:id`
+### ` /api/v1/remarks/:id`
 Pass in the id number of the remark in the place of `:id`. 
 
 `PATCH` request to this endpoint require `title` `topic` `date` `token` parameters in the body.
@@ -209,7 +209,7 @@ Pass in the id number of the remark in the place of `:id`.
  	token:  "eyMhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoibXlBcHAiLCJlbWFpbCI6ImFkbWluQHR1cmluZy5pcyIsImlhdCI6MTUyMjUaNDYwOH0.uu0hwZ-Lkv5v6XbMNOBxBwisAVZDXMW_tGnbjesMJWs"
 }
 ```
-###Response
+### Response
 The remark id returned in the case of successful `PATCH`.  Your remark has been updated in the database. 
 
 ```
