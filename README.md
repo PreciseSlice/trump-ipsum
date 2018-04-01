@@ -1,4 +1,6 @@
-# BYOB Trump Ipsum
+[![Build Status](https://travis-ci.org/PreciseSlice/trump-ipsum.svg?branch=master)](https://travis-ci.org/PreciseSlice/trump-ipsum)
+
+# BYOB Trump Ipsum Backend 
 
 An API which serves official presidential remarks one paragraph at a time.
 
@@ -17,7 +19,6 @@ The source of the data for the project is [whitehouse.gov](https://www.whitehous
 
 ## Endpoints
 
-
 ### Authentication for authorized users
 
 #### `https://trump-ipsum-backend.herokuapp.com/authenticate`
@@ -32,7 +33,7 @@ Visit the url above and [login](https://trump-ipsum-backend.herokuapp.com/authen
 ### Remarks:
 ### `/remarks`
 
-A `GET` to this endpoint returns and array of all the remarks.
+A `GET` to this endpoint returns and array of all remarks.
 
 Remarks objects have `id` `title` `topic` `date` `timestamp` properties. 
 
@@ -84,6 +85,28 @@ A `GET` to this endpoint returns a specific remark.
 ]
 ```
 <br/>
+
+####Custom topic parameters 
+###`/remarks?topic=TOPIC%20ONE`
+
+Pass in the name of the topic your are searching for in place of `TOPIC%20ONE` in the example above
+
+A `GET` will return the remark with the topic of your query if it exist in the database.
+
+### Responce 
+```
+[
+    {
+        "id": 1,
+        "title": "The Title",
+        "topic": "TOPIC ONE",
+        "date": "2/12/2018",
+        "created_at": "2018-03-29T22:45:54.710Z",
+        "updated_at": "2018-03-29T22:45:54.710Z"
+    }
+]
+``` 
+<br />
 
 ### Paragraphs:
 ### `/api/v1/paragraphs`
@@ -288,4 +311,3 @@ The remark id returned in the case of successful `DELETE`.  Your remark has been
 ```
 <br/>
 
-## Query with parameters
