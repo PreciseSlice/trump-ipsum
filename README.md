@@ -6,7 +6,7 @@ Authorized users have the ability to `POST` `PATCH` `DELETE` and are validated v
 
 ### Libraries utilized
 
-This project was made using JavaScript, Node, Express, Knex and PostgreSQL.
+This project was made using Node, Express, Knex and PostgreSQL.
 
 The testing utilizes Chai and Mocha.
 
@@ -25,9 +25,9 @@ The source of the data for the project is [whitehouse.gov](https://www.whitehous
 Visit the url above and [login](https://trump-ipsum-backend.herokuapp.com/authenticate) if you are an authorized user in order to receive a JWT granting `POST` `PATCH` `DELETE` permissions.  
 
 ### Base url: 
-####`https://trump-ipsum-backend.herokuapp.com/api/v1`
+#### `https://trump-ipsum-backend.herokuapp.com/api/v1`
 
-##GET
+## GET
 
 ### Remarks:
 ### `/remarks`
@@ -92,7 +92,7 @@ A `GET` to this endpoint returns and array of all the remarks.
 
 Paragraph objects have `id` `length` `text` `remarks_id` `created_at` `updated_at` properties. 
 
-###Response
+### Response
 ```
 [
 	{
@@ -124,12 +124,12 @@ Paragraph objects have `id` `length` `text` `remarks_id` `created_at` `updated_a
 ```
 <br/>
 
-###`/api/v1/paragraphs/:id`
+### `/api/v1/paragraphs/:id`
 Pass in the id number of the paragraph in the place of :id.
 
 A `GET` to this endpoint returns a specific paragraph.
 
-###Response
+### Response
 ```
 [
 	{
@@ -144,13 +144,13 @@ A `GET` to this endpoint returns a specific paragraph.
 ```
 <br/>
 
-##POST
+## POST
 
-###`/api/v1/remarks`
+### `/api/v1/remarks`
 
 `POST` request to this endpoint require `title` `topic` `date` `token` parameters in the body.
 
-###Example Body:
+### Example Body:
 
 ```
 {
@@ -161,7 +161,7 @@ A `GET` to this endpoint returns a specific paragraph.
 }
 ```
 
-###Response
+### Response
 The remark id is returned in the case of a successful `POST`. Your response has been added to the database. 
 
 ```
@@ -171,7 +171,7 @@ The remark id is returned in the case of a successful `POST`. Your response has 
 ```
 <br/>
 
-###`/api/v1/paragraphs`
+### `/api/v1/paragraphs`
 
 `POST` request to this endpoint require `length` `text` `remarks_id` `token` parameters in the body.
 
@@ -184,7 +184,7 @@ The remark id is returned in the case of a successful `POST`. Your response has 
 }
 ```
 
-###Response
+### Response
 The paragraph id is returned in the case of a successful `POST`. Your response has been added to the database. 
 
 ```
@@ -193,13 +193,13 @@ The paragraph id is returned in the case of a successful `POST`. Your response h
 }
 ```
 <br/>
-##PATCH
+## PATCH
 
-###`/api/v1/remarks/:id`
+###` /api/v1/remarks/:id`
 Pass in the id number of the remark in the place of `:id`. 
 
 `PATCH` request to this endpoint require `title` `topic` `date` `token` parameters in the body.
-###Example Body:
+### Example Body:
 
 ```
 {
@@ -218,11 +218,11 @@ The remark id returned in the case of successful `PATCH`.  Your remark has been 
 }
 ```
 <br/>
-###`/api/v1/paragraphs/:id`
+### `/api/v1/paragraphs/:id`
 Pass in the id number of the paragraph in the place of `:id`. 
 
 `POST` request to this endpoint require `length` `text` `remarks_id` `token` parameters in the body.
-###Example Body:
+### Example Body:
 
 ```
 { 
@@ -232,7 +232,7 @@ Pass in the id number of the paragraph in the place of `:id`.
 	"token": "eyMhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoibXlBcHAiLCJlbWFpbCI6ImFkbWluQHR1cmluZy5pcyIsImlhdCI6MTUyMjUaNDYwOH0.uu0hwZ-Lkv5v6XbMNOBxBwisAVZDXMW_tGnbjesMJWs"
 }
 ```
-###Response
+### Response
 A status of 201The paragraph id returned in the case of successful `PATCH`. Your remark has been updated in the database. 
 
 ```
@@ -241,20 +241,20 @@ A status of 201The paragraph id returned in the case of successful `PATCH`. Your
 }
 ```
 <br/>
-##Delete
+## Delete
 
-###`/api/v1/remarks/:id`
+### `/api/v1/remarks/:id`
 Pass in the id number of the remark in the place of `:id`. 
 
 `DELETE` request to this endpoint require `token` parameters in the body.
-###Example Body:
+### Example Body:
 
 ```
 {
  	token:  "eyMhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoibXlBcHAiLCJlbWFpbCI6ImFkbWluQHR1cmluZy5pcyIsImlhdCI6MTUyMjUaNDYwOH0.uu0hwZ-Lkv5v6XbMNOBxBwisAVZDXMW_tGnbjesMJWs"
 }
 ```
-###Response
+### Response
 The remark id returned in the case of successful `DELETE`.  Your remark has been removed from the database. 
 
 ```
@@ -264,18 +264,18 @@ The remark id returned in the case of successful `DELETE`.  Your remark has been
 ```
 <br/>
 
-###`/api/v1/paragraphs/:id`
+### `/api/v1/paragraphs/:id`
 Pass in the id number of the paragraph in the place of `:id`. 
 
 `DELETE` request to this endpoint require `token` parameters in the body.
-###Example Body:
+### Example Body:
 
 ```
 {
  	token:  "eyMhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoibXlBcHAiLCJlbWFpbCI6ImFkbWluQHR1cmluZy5pcyIsImlhdCI6MTUyMjUaNDYwOH0.uu0hwZ-Lkv5v6XbMNOBxBwisAVZDXMW_tGnbjesMJWs"
 }
 ```
-###Response
+### Response
 The remark id returned in the case of successful `DELETE`.  Your remark has been removed from the database. 
 
 ```
@@ -285,4 +285,4 @@ The remark id returned in the case of successful `DELETE`.  Your remark has been
 ```
 <br/>
 
-##Query with parameters
+## Query with parameters
