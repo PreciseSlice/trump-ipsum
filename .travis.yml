@@ -1,10 +1,15 @@
 language: node_js
 node_js:
-  - "node"
+- node
 services:
-  - postgresql
+- postgresql
 before_script:
-  - psql -c 'CREATE DATABASE trump_ipsum_test;' -U postgres
-
-notifcations: 
+- psql -c 'CREATE DATABASE trump_ipsum_test;' -U postgres
+notifcations:
   email: false
+deploy:
+  provider: heroku
+  api_key:
+    secure: w62UN6jTQhb0slmKRtYta5lfAdsBJ3WnODu4FXz/suX7MfE89+cNA8RwlhCUafmewrHXwa1SH/v8QZ2Zx6TV2JNmRNDSYJdmiyUmtu+k7xwG49cfbkJDn42ZmoE7lerHBR6qJHsjINTeOXjWW2bTIN82/aJ/QQGYWHodEFpdG5YZ+x6GfOfonXU/V9QkZDg5EQ4F086GITBhIy2y4OXWxEfWOXrPCZKfhEaGi/VnnbvA79kguCLzrWymhlPQKgISx32MWSx98oIP85BDhvqOIp8oQXNqoVOdl5FTQRmXZ54jvCOFBOjG47to0keUbnSergrAb//tqW51eSfT+4c/d1xo+gls+nb2KjTc6FDnYdLB5kHnIskNqwxdBE2FV/babRPe7i0k4IeVCPGSd05xlpeCWsC9kEBCSz8n7R0sfNkhL0gqJKsvQ5p8c5iKUQ2Matf4io1QVoqFeAQ61Jlqr5X7Zy6kafFjbwfn+uFBExjiLsrZXy3tJj0/zZJZ+8BCHueMIv9ynqEz/rprcc5MZ7O3TZHAV/0+2eZgtCfGj7REuXUNXHnzpRtfbKMCDfVQC2Bc4hDfsYLpInJvXzSMroee5E8waUxVd37DH3JTQ0BNFKqiVUK33mg8YGDOBgRO30VxBp55Fpiqjxsiyz/6MsT5N7R2w4vKNVwFcpBrsHs=
+  app: trump-ipsum-backend
+  skip_cleanup: true
