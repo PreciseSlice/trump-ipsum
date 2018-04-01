@@ -193,6 +193,7 @@ The paragraph id is returned in the case of a successful `POST`. Your response h
 }
 ```
 <br/>
+
 ## PATCH
 
 ### ` /api/v1/remarks/:id`
@@ -218,6 +219,7 @@ The remark id returned in the case of successful `PATCH`.  Your remark has been 
 }
 ```
 <br/>
+
 ### `/api/v1/paragraphs/:id`
 Pass in the id number of the paragraph in the place of `:id`. 
 
@@ -241,6 +243,7 @@ A status of 201The paragraph id returned in the case of successful `PATCH`. Your
 }
 ```
 <br/>
+
 ## Delete
 
 ### `/api/v1/remarks/:id`
