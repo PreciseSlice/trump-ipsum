@@ -16,11 +16,11 @@ app.locals.title = 'Trump Ipsum';
 
 const checkAuth = (request, response, next) => {
   const { token } = request.body;
-  
+
   if (!token) {
     return response
       .status(403)
-      .send({ error: 'You must be authorized to access this endpoint.'});
+      .send({ error: 'You must be authorized to access this endpoint.' });
   }
 
   try {
@@ -33,20 +33,40 @@ const checkAuth = (request, response, next) => {
 };
 
 app.get('/api/v1/remarks', (request, response) => {
-  database('remarks')
-    .select()
-    .then(remarks => {
-      if (remarks.length) {
+  const { topic } = request.query;
+
+  if (topic) {
+    database('remarks')
+      .where('topic', topic)
+      .select()
+      .then(remarks => {
+        console.log(remarks);
+        if (!remarks.length) {
+          return response
+            .status(404)
+            .json({ error: 'Could not find requested remark' });
+        }
         response.status(200).json(remarks);
-      } else {
-        response.status(404).json({
-          error: 'remarks not found'
-        });
-      }
-    })
-    .catch(error => {
-      response.status(500).json({ error });
-    });
+      })
+      .catch(error => {
+        response.status(500).json({ error });
+      });
+  } else {
+    database('remarks')
+      .select()
+      .then(remarks => {
+        if (remarks.length) {
+          response.status(200).json(remarks);
+        } else {
+          response.status(404).json({
+            error: 'remarks not found'
+          });
+        }
+      })
+      .catch(error => {
+        response.status(500).json({ error });
+      });
+  }
 });
 
 app.post('/api/v1/remarks', checkAuth, (request, response) => {
@@ -255,6 +275,8 @@ app.post('/authenticate', (request, response) => {
     response.status(401).json({ error: 'Admin privileges not authorized' });
   }
 });
+
+app.get('/api/v1/');
 
 app.listen(app.get('port'), () => {
   // eslint-disable-next-line
