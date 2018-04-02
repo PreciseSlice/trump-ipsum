@@ -456,4 +456,66 @@ describe('API routes', () => {
         });
     });
   });
+
+  describe('POST /authenticate', () => {
+    it('should return a token', () => {
+      return chai
+        .request(server)
+        .post('/authenticate')
+        .send({ 
+          "appName": "bobApp",
+          "email": "bob@turing.io"
+        })
+        .then(response => {
+          response.should.have.status(201);
+          response.body.should.be.a('object');
+          response.body.token.should.a('string');
+        })
+        .catch(err => {
+          throw err;
+        });
+    });
+
+    it('should not return a token if required query parameters are missing', () => {
+      return chai
+        .request(server)
+        .post('/authenticate')
+        .send({ 
+          "email": "bob@turing.io"
+        })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.should.have.property('error');
+          response.body.error.should.equal(
+            'Invalid appName or email'
+          );
+        })
+        .catch(err => {
+          throw err;
+        });
+    });
+    
+
+    it('should not return a token if the users email does not match the required parameters', () => {
+      return chai
+        .request(server)
+        .post('/authenticate')
+        .send({ 
+          "appName": "bobApp",
+          "email": "bob@gm,ail.com"
+        })
+        .then(response => {
+          response.should.have.status(401);
+          response.body.should.be.a('object');
+          response.body.should.have.property('error');
+          response.body.error.should.equal(
+            'Admin privileges not authorized'
+          );
+        })
+        .catch(err => {
+          throw err;
+        });
+    });
+  })
 });
