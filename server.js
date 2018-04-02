@@ -40,7 +40,6 @@ app.get('/api/v1/remarks', (request, response) => {
       .where('topic', topic)
       .select()
       .then(remarks => {
-        console.log(remarks);
         if (!remarks.length) {
           return response
             .status(404)
@@ -173,7 +172,9 @@ app.get('/api/v1/paragraphs', (request, response) => {
 });
 
 app.post('/api/v1/paragraphs', checkAuth, (request, response) => {
+  // eslint-disable-next-line
   const { length, text, remarks_id } = request.body;
+  // eslint-disable-next-line
   const paragraph = { length, text, remarks_id };
 
   for (let requiredParameter of ['length', 'text', 'remarks_id']) {
@@ -258,17 +259,17 @@ app.delete('/api/v1/paragraphs/:id', checkAuth, (request, response) => {
 });
 
 app.post('/authenticate', (request, response) => {
-  const payload = request.body;
-  const emailDomain = payload.email.substring(payload.email.length - 10);
+  const body = request.body;
+  const emailDomain = body.email.substring(body.email.length - 10);
 
   for (let requiredParameter of ['appName', 'email']) {
-    if (!payload[requiredParameter]) {
+    if (!body[requiredParameter]) {
       return response.status(422).send({ error: 'Invalid appName or email' });
     }
   }
 
   if (emailDomain === '@turing.io') {
-    const token = jwt.sign(payload, process.env.SECRET_KEY);
+    const token = jwt.sign(body, process.env.SECRET_KEY);
 
     return response.status(201).json({ token });
   } else {
