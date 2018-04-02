@@ -10,14 +10,15 @@ const submitForm = event => {
   })
     .then(response => response.json())
     .then(renderResponse)
+    // eslint-disable-next-line
     .catch(error => console.log(error));
 
-  appName.value = '';
-  email.value = '';
+  document.querySelector('form').reset();
 };
 
-const renderResponse = (response) => {
-  document.querySelector('#responseDiv').innerHTML += response.token || response.error;
-}
+const renderResponse = response => {
+  document.querySelector('#responseDiv').innerHTML +=
+    response.token || response.error;
+};
 
 document.querySelector('form').addEventListener('submit', submitForm);
