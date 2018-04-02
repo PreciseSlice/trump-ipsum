@@ -281,15 +281,17 @@ Pass in the id number of the remark in the place of `:id`.
  	token:  "eyMhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoibXlBcHAiLCJlbWFpbCI6ImFkbWluQHR1cmluZy5pcyIsImlhdCI6MTUyMjUaNDYwOH0.uu0hwZ-Lkv5v6XbMNOBxBwisAVZDXMW_tGnbjesMJWs"
 }
 ```
-### Response
-
-The remark id returned in the case of successful `DELETE`.  Your remark has been removed from the database. 
+<br/>
 
 #### Warning:
 
 `CASCADE DELETE` is used in this database. 
 
-Removing a `reponce` will delete all `paragraphs` corrisponding to the remark.  
+Removing a `remark` will delete all `paragraphs` corrisponding to the remark. 
+
+### Response
+
+The remark id returned in the case of successful `DELETE`.  Your remark has been removed from the database.  
 
 ```
 {
