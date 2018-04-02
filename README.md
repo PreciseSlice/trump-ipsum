@@ -86,14 +86,15 @@ A `GET` to this endpoint returns a specific remark.
 ```
 <br/>
 
-####Custom topic parameters 
-###`/remarks?topic=TOPIC%20ONE`
+#### Custom topic parameters 
+
+### `/remarks?topic=TOPIC%20ONE`
 
 Pass in the name of the topic your are searching for in place of `TOPIC%20ONE` in the example above
 
 A `GET` will return the remark with the topic of your query if it exist in the database.
 
-### Responce 
+### Response 
 ```
 [
     {
@@ -281,7 +282,14 @@ Pass in the id number of the remark in the place of `:id`.
 }
 ```
 ### Response
+
 The remark id returned in the case of successful `DELETE`.  Your remark has been removed from the database. 
+
+#### Warning:
+
+`CASCADE DELETE` is used in this database. 
+
+Removing a `reponce` will delete all `paragraphs` corrisponding to the remark.  
 
 ```
 {

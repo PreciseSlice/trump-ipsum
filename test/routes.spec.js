@@ -10,8 +10,10 @@ const jwt = require('jsonwebtoken');
 chai.use(chaiHttp);
 
 describe('API routes', () => {
-
-  const token = jwt.sign({ email: 'vladimir@turing.io', appName: 'myMinion' }, process.env.SECRET_KEY);
+  const token = jwt.sign(
+    { email: 'vladimir@turing.io', appName: 'myMinion' },
+    process.env.SECRET_KEY
+  );
 
   beforeEach(done => {
     database.migrate.rollback().then(() => {
@@ -84,6 +86,24 @@ describe('API routes', () => {
           );
         });
     });
+
+    it('should not create a remark without a token', () => {
+      return chai
+        .request(server)
+        .post('/api/v1/remarks')
+        .send({
+          title: 'Yeah He Did That',
+          topic: 'TOPIC ONE',
+          date: '02/28/2018'
+        })
+        .then(response => {
+          response.should.have.status(403);
+          response.body.should.have.property('error');
+          response.body.error.should.equal(
+            'You must be authorized to access this endpoint.'
+          );
+        });
+    });
   });
 
   describe('GET api/v1/remarks/:id', () => {
@@ -108,6 +128,32 @@ describe('API routes', () => {
         .then(response => {
           response.should.have.status(404);
           response.body.error.should.equal('Could not find remark with id 2');
+        });
+    });
+  });
+
+  describe('GET /api/v1/remarks?topic=', () => {
+    it('should get a remark by topic using a custom query', () => {
+      return chai
+        .request(server)
+        .get('/api/v1/remarks?topic=TOPIC%20ONE')
+        .then(response => {
+          response.should.have.status(200);
+          response.body.should.be.a('array');
+          response.body[0].id.should.equal(1);
+          response.body[0].title.should.equal('The Title');
+          response.body[0].topic.should.equal('TOPIC ONE');
+          response.body[0].date.should.equal('2/12/2018');
+        });
+    });
+
+    it('should return 404 if remark with requested topic does not exist', () => {
+      return chai
+        .request(server)
+        .get('/api/v1/remarks/?topic=TOPIC%20FOUR')
+        .then(response => {
+          response.should.have.status(404);
+          response.body.error.should.equal('Could not find requested remark');
         });
     });
   });
@@ -146,16 +192,65 @@ describe('API routes', () => {
           );
         });
     });
+
+    it('should not patch a remark without a token', () => {
+      return chai
+        .request(server)
+        .patch('/api/v1/remarks/1')
+        .send({
+          title: 'Yeah He Did That',
+          topic: 'TOPIC ONE',
+          date: '02/28/2018'
+        })
+        .then(response => {
+          response.should.have.status(403);
+          response.body.should.have.property('error');
+          response.body.error.should.equal(
+            'You must be authorized to access this endpoint.'
+          );
+        });
+    });
   });
 
   describe('DELETE api/v1/remarks/:id', () => {
-    xit('should delete the remark with the specified id', () => {
+    it('should delete the remark with the specified id', () => {
       return chai
         .request(server)
         .delete('/api/v1/remarks/1')
+        .send({ token })
         .then(response => {
-          // response.should.have.status(202);
-          console.log(response.body);
+          response.should.have.status(202);
+          response.body.should.equal(1);
+        });
+    });
+
+    it('should return 422 if remark id does not exist', () => {
+      return chai
+        .request(server)
+        .delete('/api/v1/remarks/2')
+        .send({ token })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.have.property('error');
+          response.body.error.should.equal('No remark ID provided');
+        });
+    });
+
+    it('should not delete a remark without a token', () => {
+      return chai
+        .request(server)
+        .delete('/api/v1/remarks/1')
+        .send({
+          title: 'Yeah He Did That',
+          topic: 'TOPIC ONE',
+          date: '02/28/2018'
+        })
+        .then(response => {
+          response.should.have.status(403);
+          response.body.should.have.property('error');
+          response.body.error.should.equal(
+            'You must be authorized to access this endpoint.'
+          );
         });
     });
   });
@@ -214,6 +309,23 @@ describe('API routes', () => {
           response.body.should.have.property('error');
           response.body.error.should.equal(
             'Error you are missing remarks_id property'
+          );
+        });
+    });
+
+    it('should not create a paragraph without a token', () => {
+      return chai
+        .request(server)
+        .post('/api/v1/paragraphs/')
+        .send({
+          length: 'short',
+          text: 'Something offensive'
+        })
+        .then(response => {
+          response.should.have.status(403);
+          response.body.should.have.property('error');
+          response.body.error.should.equal(
+            'You must be authorized to access this endpoint.'
           );
         });
     });
@@ -282,6 +394,24 @@ describe('API routes', () => {
           );
         });
     });
+
+    it('should not update a paragraph without a token', () => {
+      return chai
+        .request(server)
+        .patch('/api/v1/paragraphs/1')
+        .send({
+          remarks_id: '1',
+          length: 'short',
+          text: 'Something offensive'
+        })
+        .then(response => {
+          response.should.have.status(403);
+          response.body.should.have.property('error');
+          response.body.error.should.equal(
+            'You must be authorized to access this endpoint.'
+          );
+        });
+    });
   });
 
   describe('DELETE api/v1/paragraphs/:id', () => {
@@ -303,9 +433,89 @@ describe('API routes', () => {
         .send({ token })
         .then(response => {
           response.should.have.status(404);
-          response.body.should.have.property('error')
+          response.body.should.have.property('error');
           response.body.error.should.equal('No paragraph ID provided');
+        });
+    });
+
+    it('should not delete a paragraph without a token', () => {
+      return chai
+        .request(server)
+        .delete('/api/v1/paragraphs/1')
+        .send({
+          remarks_id: '1',
+          length: 'short',
+          text: 'Something offensive'
         })
-    })
+        .then(response => {
+          response.should.have.status(403);
+          response.body.should.have.property('error');
+          response.body.error.should.equal(
+            'You must be authorized to access this endpoint.'
+          );
+        });
+    });
   });
+
+  describe('POST /authenticate', () => {
+    it('should return a token', () => {
+      return chai
+        .request(server)
+        .post('/authenticate')
+        .send({ 
+          "appName": "bobApp",
+          "email": "bob@turing.io"
+        })
+        .then(response => {
+          response.should.have.status(201);
+          response.body.should.be.a('object');
+          response.body.token.should.a('string');
+        })
+        .catch(err => {
+          throw err;
+        });
+    });
+
+    it('should not return a token if required query parameters are missing', () => {
+      return chai
+        .request(server)
+        .post('/authenticate')
+        .send({ 
+          "email": "bob@turing.io"
+        })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.should.have.property('error');
+          response.body.error.should.equal(
+            'Invalid appName or email'
+          );
+        })
+        .catch(err => {
+          throw err;
+        });
+    });
+    
+
+    it('should not return a token if the users email does not match the required parameters', () => {
+      return chai
+        .request(server)
+        .post('/authenticate')
+        .send({ 
+          "appName": "bobApp",
+          "email": "bob@gm,ail.com"
+        })
+        .then(response => {
+          response.should.have.status(401);
+          response.body.should.be.a('object');
+          response.body.should.have.property('error');
+          response.body.error.should.equal(
+            'Admin privileges not authorized'
+          );
+        })
+        .catch(err => {
+          throw err;
+        });
+    });
+  })
 });

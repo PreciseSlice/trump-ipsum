@@ -23,11 +23,14 @@ nightmare
 
     fs.writeFile('./links.json', output, 'utf8', err => {
       if (err) {
+        // eslint-disable-next-line
         return console.log(err);
       }
     });
+    // eslint-disable-next-line
     console.log('File was saved');
   })
   .catch(function(error) {
+    // eslint-disable-next-line
     console.error('Search failed:', error);
   });

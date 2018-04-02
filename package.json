@@ -5,7 +5,7 @@
   "main": "scrape-remark-links.js",
   "scripts": {
     "test": "NODE_ENV=test mocha --exit",
-    "lint": "./node_modules/eslint/bin/eslint.js ./*.js"
+    "lint": "./node_modules/eslint/bin/eslint.js ./*.js ./public/scripts/*js"
   },
   "keywords": [],
   "author": "",

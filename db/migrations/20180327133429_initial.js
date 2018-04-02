@@ -12,7 +12,7 @@ exports.up = function(knex, Promise) {
       table.string('length');
       table.text('text');
       table.integer('remarks_id').unsigned();
-      table.foreign('remarks_id').references('remarks.id');
+      table.foreign('remarks_id').references('remarks.id').onDelete('CASCADE')
       table.timestamps(true, true);
     })
   ]);
